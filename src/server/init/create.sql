@@ -1,0 +1,21 @@
+CREATE TABLE bitcoin (
+    Id SERIAL PRIMARY KEY,
+    Date DATE NOT NULL,
+    Open NUMERIC(12, 2) NOT NULL,
+    High NUMERIC(12, 2) NOT NULL,
+    Low NUMERIC(12, 2) NOT NULL,
+    Close NUMERIC(12, 2) NOT NULL,
+    Adj_Close NUMERIC(12, 2) NOT NULL,
+    Volume BIGINT NOT NULL
+);
+
+CREATE TABLE ethereum (
+    Id SERIAL PRIMARY KEY,
+    Date DATE NOT NULL,
+    Open NUMERIC(12, 2) NOT NULL,
+    High NUMERIC(12, 2) NOT NULL,
+    Low NUMERIC(12, 2) NOT NULL,
+    Close NUMERIC(12, 2) NOT NULL,
+    Adj_Close NUMERIC(12, 2) NOT NULL,
+    Volume BIGINT NOT NULL
+);
