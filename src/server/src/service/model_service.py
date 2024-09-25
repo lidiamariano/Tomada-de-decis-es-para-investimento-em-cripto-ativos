@@ -1,9 +1,16 @@
 import pandas as pd
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense, Dropout, Activation
+from keras.losses import mean_absolute_error
+from sqlalchemy.orm import Session
+
+from src.models.repositories.model_repository import ModelRepository
 
 class ModelService:
+  def __init__(self, session: Session):
+    self.model_repository = ModelRepository(session)
+  
   def _transform_to_dataframe(self, data):
     if data is None:
       raise ValueError("O argumento 'data' é None.")
@@ -105,7 +112,40 @@ class ModelService:
     
     btc_model, eth_model, btc_history, eth_history = self._train_models(LSTM_training_inputs, market_df)
     
-    eth_model.save('../../models/eth_model.h5')
-    btc_model.save('../../models/btc_model.h5')
+    eth_model.save('models/eth_model.h5')
+    btc_model.save('models/btc_model.h5')
         
     return btc_model, eth_model, btc_history, eth_history
+  
+  def predict(self, btc_data, eth_data, model_path='models/'):
+    # Transformar os dados recebidos em DataFrames
+    btc_df = self._transform_to_dataframe(btc_data)
+    eth_df = self._transform_to_dataframe(eth_data)
+    
+    # Gerar o DataFrame de mercado com os dados combinados
+    market_df = self._generate_market_df(btc_df, eth_df)
+    
+    # Preparar os dados de entrada para o modelo
+    LSTM_training_inputs = self._prepare_data(market_df)
+    
+    # Carregar os modelos treinados
+    btc_model = load_model(f'{model_path}btc_model.h5', custom_objects={'mae': mean_absolute_error})
+    eth_model = load_model(f'{model_path}eth_model.h5', custom_objects={'mae': mean_absolute_error})
+    
+    # Fazer as previsões
+    btc_prediction = btc_model.predict(LSTM_training_inputs[-1:])[0][0]
+    eth_prediction = eth_model.predict(LSTM_training_inputs[-1:])[0][0]
+    
+    # Desnormalizar as previsões para voltarem ao valor original
+    btc_last_close = market_df['close_btc'].iloc[-1]
+    eth_last_close = market_df['close_eth'].iloc[-1]
+    
+    btc_prediction = (btc_prediction + 1) * btc_last_close
+    eth_prediction = (eth_prediction + 1) * eth_last_close
+    
+    self.model_repository.insert_predict(btc_prediction, eth_prediction)
+    
+    return {
+      'btc_prediction': btc_prediction,
+      'eth_prediction': eth_prediction
+    }
