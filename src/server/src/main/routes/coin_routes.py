@@ -21,3 +21,17 @@ def insert_coin_data(
   ethereum_service.insert()
   
   return {"message": "Data inserted for 'BTC-USD' and 'ETH-USD'"}
+
+@router.get("/btc")
+def get_btc_data(
+  db: Session = Depends(get_db)
+):
+  bitcoin_service = BitcoinService(db)
+  return bitcoin_service.get()
+
+@router.get("/eth")
+def get_eth_data(
+  db: Session = Depends(get_db)
+):
+  ethereum_service = EthereumService(db)
+  return ethereum_service.get()

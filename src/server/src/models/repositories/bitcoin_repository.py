@@ -1,14 +1,44 @@
+from typing import Dict, List
 import yfinance as yf
 import pandas as pd
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 
 from src.models.entities.bitcoin import Bitcoin
 
 class BitcoinRepository:
   def __init__(self, session: Session) -> None:
     self.session = session
+
+  def get(self) -> List[Dict]:
+    try:
+      coins = (
+        self.session
+        .query(Bitcoin)
+        .all()
+      )
+      
+      return [
+        {
+          'date': coin.date,
+          'open': float(coin.open),
+          'high': float(coin.high),
+          'low': float(coin.low),
+          'close': float(coin.close),
+          'adj_close': float(coin.adj_close),
+          'volume': coin.volume
+        }
+        for coin in coins
+      ]
+    
+    except NoResultFound:
+      raise Exception("No bitcoin found!")
+
+    except Exception as exception:
+      raise exception
+
 
   def insert(self) -> None:
     # Baixando dados de 2020 até hoje
