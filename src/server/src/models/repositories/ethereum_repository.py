@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from src.models.entities.ethereum import Ethereum
+from src.utils.logging_config import logger
 
 class EthereumRepository:
   def __init__(self, session: Session) -> None:
@@ -32,11 +33,14 @@ class EthereumRepository:
         }
         for coin in coins
       ]
+      logger.info("Ethereum data fetched successfully.")
       
     except NoResultFound:
+      logger.error("No Ethereum found!")
       raise Exception("No Ethereum found!")
 
     except Exception as exception:
+      logger.error(f"An error occurred: {exception}")
       raise exception
 
 
@@ -86,10 +90,13 @@ class EthereumRepository:
 
     try:
       self.session.commit()
+      logger.info(f"Data inserted for 'ETH-USD' on {row['date']}")
       print(f"Data inserted for 'ETH-USD'")
     except IntegrityError:
+      logger.error(f"Failed to insert data for 'ETH-USD': IntegrityError")
       self.session.rollback()
       print(f"Failed to insert data for 'ETH-USD': IntegrityError")
     except Exception as e:
+      logger.error(f"Failed to insert data for 'ETH-USD': {e}")
       self.session.rollback()
       print(f"Failed to insert data for 'ETH-USD': {e}")

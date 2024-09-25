@@ -4,6 +4,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from datetime import datetime
 
 from src.models.entities.predict import Predict
+from src.utils.logging_config import logger
 
 class ModelRepository:
   def __init__(self, session: Session):
@@ -19,11 +20,14 @@ class ModelRepository:
       
       self.session.add(predict)
       self.session.commit()
+      logger.info("Predictions inserted successfully.")
       
     except IntegrityError:
+      logger.error("Integrity Error in inserting predictions.")
       self.session.rollback()
       raise Exception("Integrity Error")
       
     except Exception as exception:
+      logger.error(f"An error occurred: {exception}")
       self.session.rollback()
       raise exception

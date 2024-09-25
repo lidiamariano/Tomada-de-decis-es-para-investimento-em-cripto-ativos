@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 from src.models.entities.bitcoin import Bitcoin
+from src.utils.logging_config import logger
 
 class BitcoinRepository:
   def __init__(self, session: Session) -> None:
@@ -20,6 +21,7 @@ class BitcoinRepository:
         .all()
       )
       
+      logger.info("Bitcoin data fetched successfully.")
       return [
         {
           'date': coin.date,
@@ -32,11 +34,13 @@ class BitcoinRepository:
         }
         for coin in coins
       ]
-    
+      
     except NoResultFound:
+      logger.error("No bitcoin found!")
       raise Exception("No bitcoin found!")
 
     except Exception as exception:
+      logger.error(f"An error occurred: {exception}")
       raise exception
 
 
@@ -86,10 +90,10 @@ class BitcoinRepository:
 
     try:
       self.session.commit()
-      print(f"Data inserted for 'BTC-USD'")
+      logger.info("Data inserted for 'BTC-USD'.")
     except IntegrityError:
       self.session.rollback()
-      print(f"Failed to insert data for 'BTC-USD': IntegrityError")
+      logger.error(f"Failed to insert data for 'BTC-USD': IntegrityError")
     except Exception as e:
       self.session.rollback()
-      print(f"Failed to insert data for 'BTC-USD': {e}")
+      logger.error(f"Failed to insert data for 'BTC-USD': {e}")

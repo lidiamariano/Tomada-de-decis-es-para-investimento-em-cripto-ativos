@@ -5,6 +5,7 @@ from src.models.settings.connection import get_db
 from src.service.bitcoin_service import BitcoinService
 from src.service.ethereum_service import EthereumService
 from src.service.model_service import ModelService
+from src.utils.logging_config import logger
 
 router = APIRouter(
   prefix="/model",
@@ -15,6 +16,7 @@ router = APIRouter(
 def train_model(
   db: Session = Depends(get_db)
 ):
+  logger.info("Training model...")
   bitcoin_service = BitcoinService(db)
   btc_data = bitcoin_service.get()
   
@@ -24,12 +26,14 @@ def train_model(
   model_service = ModelService()
   model_service.run_pipeline(btc_data=btc_data, eth_data=eth_data)
   
+  logger.info("Model trained successfully.")
   return {"message": "Model trained successfully"}
 
 @router.post("/retrain_model")
 def retrain_model(
   db: Session = Depends(get_db)
 ):
+  logger.info("Retraining model...")
   bitcoin_service = BitcoinService(db)
   ethereum_service = EthereumService(db)
   
@@ -42,12 +46,14 @@ def retrain_model(
   model_service = ModelService()
   model_service.run_pipeline(btc_data=btc_data, eth_data=eth_data)
   
+  logger.info("Model retrained successfully.")
   return {"message": "Model retrained successfully"}
 
 @router.get("/predict")
 def predict(
   db: Session = Depends(get_db)
 ):
+  logger.info("Predicting...")
   bitcoin_service = BitcoinService(db)
   btc_data = bitcoin_service.get()
   
@@ -55,6 +61,8 @@ def predict(
   eth_data = ethereum_service.get()
   
   model_service = ModelService(db)
+  
+  logger.info("Predicted successfully.")
   return model_service.predict(btc_data=btc_data, eth_data=eth_data)
 
   

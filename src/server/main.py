@@ -4,9 +4,7 @@ import logging
 
 from src.main.server.server import router
 from src.utils.init_db import create_tables
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from src.utils.logging_config import logger
 
 app = FastAPI(
   debug=True,
