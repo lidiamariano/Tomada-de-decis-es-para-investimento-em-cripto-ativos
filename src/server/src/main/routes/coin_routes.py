@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from src.models.settings.connection import get_db
 from src.service.bitcoin_service import BitcoinService
 from src.service.ethereum_service import EthereumService
+from src.service.model_service import ModelService
 from src.utils.logging_config import logger
 
 router = APIRouter(
@@ -44,3 +45,14 @@ def get_eth_data(
   
   logger.info("Data for 'ETH-USD' retrieved successfully.")
   return ethereum_service.get()
+
+@router.get("/predict")
+def predict(
+  db: Session = Depends(get_db)
+):
+  logger.info("Get Predict...")
+  model_service = ModelService(db)
+  response = model_service.get_predict()
+  
+  logger.info("Predictions retrieved successfully.")
+  return response

@@ -31,3 +31,20 @@ class ModelRepository:
       logger.error(f"An error occurred: {exception}")
       self.session.rollback()
       raise exception
+    
+  def get_predict(self) -> Predict:
+    try:
+      predict = self.session.query(Predict).order_by(Predict.date.desc()).first()
+      
+      if predict is None:
+        raise NoResultFound("No predictions found.")
+      
+      return predict
+    
+    except NoResultFound as exception:
+      logger.error(f"No predictions found: {exception}")
+      raise exception
+      
+    except Exception as exception:
+      logger.error(f"An error occurred: {exception}")
+      raise exception

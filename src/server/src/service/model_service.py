@@ -149,3 +149,12 @@ class ModelService:
       'btc_prediction': btc_prediction,
       'eth_prediction': eth_prediction
     }
+    
+  def get_predict(self):
+    predict = self.model_repository.get_predict()
+    
+    return {
+      'date': predict.date,
+      'btc_predict': predict.btc_predict,
+      'eth_predict': predict.eth_predict
+    }

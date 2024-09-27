@@ -23,7 +23,7 @@ def train_model(
   ethereum_service = EthereumService(db)
   eth_data = ethereum_service.get()
   
-  model_service = ModelService()
+  model_service = ModelService(db)
   model_service.run_pipeline(btc_data=btc_data, eth_data=eth_data)
   
   logger.info("Model trained successfully.")
@@ -43,7 +43,7 @@ def retrain_model(
   btc_data = bitcoin_service.get()
   eth_data = ethereum_service.get()
   
-  model_service = ModelService()
+  model_service = ModelService(db)
   model_service.run_pipeline(btc_data=btc_data, eth_data=eth_data)
   
   logger.info("Model retrained successfully.")
