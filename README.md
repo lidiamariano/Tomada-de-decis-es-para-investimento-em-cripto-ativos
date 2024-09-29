@@ -51,7 +51,7 @@ Este repositório contém um projeto desenvolvido individualmente que visa const
    ```bash
    localhost:5000
    ```
------------------------------------------------------------------**Ponderada do Rafael🫨**------------------------------------------------------------------
+----------------------------------------------------------**Ponderada do Rafael🫨**---------------------------------------------------------
 ## Faria sentido utilizar um Data Lake para esse projeto?
 
 1. **Variedade de Dados**: O mercado de criptoativos é influenciado por uma ampla gama de fatores, desde dados estruturados (preços, volumes de negociação) até dados não estruturados (notícias, sentimentos em redes sociais). Um data lake permite armazenar todos esses tipos de dados em um único repositório.
