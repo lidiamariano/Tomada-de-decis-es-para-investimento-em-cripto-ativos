@@ -30,11 +30,11 @@ Este repositório contém um projeto desenvolvido individualmente que visa const
 3. **Rodar o docker:**
 
    ```bash
-   docker-compose up -d --buil 
+   docker-compose up -d --build
    ```
    ou
    ```bash
-   docker-compose up --buil 
+   docker-compose up --build
    ```
 
 ### ▶️ Execução
